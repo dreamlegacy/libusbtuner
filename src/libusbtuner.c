@@ -95,7 +95,7 @@ struct vtuner_adapter
 };
 
 struct vtuner_adapter adapters[MAX_ADAPTERS];
-static int assigned_adapters = -1;
+static int assigned_adapters;
 
 static int scan_adapters()
 {
@@ -806,6 +806,9 @@ int libusbtuner_stat64(int ver, const char *p, struct stat *s)
 
 static void initialize_globals(void)
 {
+	FILE *f;
+	char tmp[255];
+
 	if (libc_close)
 		return;
 
@@ -815,7 +818,19 @@ static void initialize_globals(void)
 	libc_stat = find_symbol(NULL, "__xstat", libusbtuner_stat);
 	libc_stat64 = find_symbol(NULL, "__xstat64", libusbtuner_stat64);
 
-	scan_usb_tuners();
+	snprintf(tmp, sizeof(tmp), "/proc/%d/cmdline", getpid());
+	f = fopen(tmp, "r");
+	if (f)
+	{
+		ssize_t rd = fread(tmp, 1, 255, f);
+		if (rd > 0)
+		{
+			const char *s = strstr(tmp, "enigma2");
+			if ((s == tmp || (s && s[-1] == '/')) && !s[7]) /* check if enigma2 or /enigma2 */
+				scan_usb_tuners();
+		}
+		fclose(f);
+	}
 }
 
 int open(const char *, int, ...) __attribute__ ((weak, alias ("libusbtuner_open")));
