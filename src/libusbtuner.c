@@ -710,9 +710,12 @@ static int libusbtuner_close(int fd)
 	if (!libc_close)
 		initialize_globals();
 
-	ret = check_usb_tuner_close(fd);
-	if (ret == 0)
-		return ret;
+	if (fd >= 0)
+	{
+		ret = check_usb_tuner_close(fd);
+		if (ret == 0)
+			return ret;
+	}
 
 	return libc_close(fd);
 }
