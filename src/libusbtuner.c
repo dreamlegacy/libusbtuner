@@ -541,7 +541,7 @@ static void scan_usb_tuners()
 				if (adap < MAX_ADAPTERS)
 					++entries[adap];
 				else
-					fprintf(stderr, "skipped '%s' on main adapter lookup\n", names[n]->d_name[3]);
+					fprintf(stderr, "skipped '%s' on main adapter lookup\n", names[n]->d_name);
 			}
 			free(names[n]);
 		}
