@@ -155,7 +155,7 @@ static int scan_adapters()
 		for (vtuner=0; vtuner < 8; ++vtuner)
 		{
 			tmp[16] = '0' + i;
-			adapters[i].vtuner = open(tmp, O_RDWR);
+			adapters[i].vtuner = libc_open(tmp, O_RDWR);
 			if (adapters[i].vtuner < 0)
 			{
 				if (errno == -EBUSY) // skip busy vtuners
